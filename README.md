@@ -13,9 +13,10 @@ This is a modular and flexible MATLAB tool for generating and analyzing 2D rando
   - **PSD Models**: Includes a fractal model with a roll-off frequency (`simple_rolloff.m`) and the K-correlation model (`k_correlation.m`).
   - **Height Distributions**: Supports different initial noise profiles, such as standard Gaussian (`randn_noise.m`).
 - **Comprehensive Analysis**:
-  - **Statistical**: Calculates RMS Height (`Sq`), Skewness (`Ssk`), and Kurtosis (`Sku`).
+  - **Statistical**: Calculates RMS Height (`Sq`), Skewness (`Ssk`), Kurtosis (`Sku`), and RMS Gradient (Sdq).
   - **Spectral**: Calculates spectral moments (`m0`, `m2`, `m4`) from both real-space gradients and by integrating the numerical PSD for self-consistency.
   - **Correlation**: Calculates the Autocovariance Function (ACF) and Correlation Lengths (`Clx`, `Cly`) for both isotropic and anisotropic surfaces.
+  - **Hybrid parameter $\rho$** = (Sq * Sdq)/Cl [[Solhjoo and Vakis, Tribology International 115 (2017) 165-178]](https://pure.rug.nl/ws/portalfiles/portal/47462446/Chapter_5.pdf).
   - **Multi-Asperity**: Calculates Greenwood-Williamson style parameters derived from spectral moments, including summit density, mean summit radius, and more.
   - **PSD Comparison**: Includes two different radial averaging algorithms (`radialavg.m` and `RadiAve.m`) for comparison.
 - **Save/Load Workflow**:
