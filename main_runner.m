@@ -71,14 +71,14 @@ if startsWith(config.generation.method, 'PSD')
         % 'm0': Match a target RMS height (m0).
         % 'm2': Match a target RMS gradient (m2).
         % 'm0_and_m2': Match BOTH (requires a model with a free parameter like simple_rolloff).
-        config.psd.constraint_mode = 'm0_and_m2';
+        config.psd.constraint_mode = 'm0';
     elseif contains(model_name, 'k_correlation')
         % Parameters for the K-correlation (Palasantzas) model
         config.psd.model = @psd_models.k_correlation;
         config.psd.constraint_mode = 'm0';
     end
     config.psd.target_rms_height = 8.0;
-    config.psd.target_rms_gradient = 3;
+    config.psd.target_rms_gradient = 1;
     config.psd.psd_slope = -8;
     config.psd.corr_lengths = 20;% Use scalar since the surface will be isotropic.
 
@@ -163,6 +163,7 @@ elseif strcmpi(config.workflow.mode, 'Analyze Only')
         if overwrite_config
             % ...but overwrite its analysis and plotting switches with the
             % current settings, allowing the user to override them.
+            report_config.psd.model = config.psd.model;
             report_config.analysis = config.analysis;
             report_config.plotting = config.plotting;
         end

@@ -105,16 +105,40 @@ switch config.generation.method
         % disp('  - Performing Inverse Fast Fourier Transform...');
         surface_h_unscaled = real(ifft2(ifftshift(fourier_space_surface)));
 
-        % Normalize the generated surface and scale it to the exact target RMS height
-        current_rms = std(surface_h_unscaled(:));
-        target_rms = config.psd.target_rms_height;
+        % Apply final scaling based on the specified constraint mode
+        if strcmp(config.psd.constraint_mode, 'm0') || strcmp(config.psd.constraint_mode, 'm0_and_m2')
+            % --- Scale to Target RMS Height (Sq) ---
+            disp('  - Scaling surface to target RMS height...');
+            current_rms = std(surface_h_unscaled(:));
+            target_rms = config.psd.target_rms_height;
 
-        % Avoid division by zero if the surface is flat
-        if current_rms > 0
-            scaling_factor = target_rms / current_rms;
-            surface_h = surface_h_unscaled * scaling_factor;
-        else
-            surface_h = surface_h_unscaled; % Already zero
+            if current_rms > 0
+                scaling_factor = target_rms / current_rms;
+                surface_h = surface_h_unscaled * scaling_factor;
+            else
+                surface_h = surface_h_unscaled; % Already zero
+            end
+
+        elseif strcmp(config.psd.constraint_mode, 'm2')
+            % --- Scale to Target RMS Gradient (Sdq) ---
+            disp('  - Scaling surface to target RMS gradient...');
+
+            % Get dx and dy from the config struct
+            point_spacing = config.grid.point_spacing;
+            dx = point_spacing(1);
+            dy = point_spacing(2);
+
+            % Calculate RMS gradient of the unscaled surface
+            [dfdx, dfdy] = gradient(surface_h_unscaled, dx, dy);
+            current_rms_gradient = sqrt(mean(dfdx(:).^2 + dfdy(:).^2));
+            target_rms_gradient = config.psd.target_rms_gradient;
+
+            if current_rms_gradient > 0
+                scaling_factor = target_rms_gradient / current_rms_gradient;
+                surface_h = surface_h_unscaled * scaling_factor;
+            else
+                surface_h = surface_h_unscaled;
+            end
         end
 
         % surface_data.generation_params.q_lower = q_lower;

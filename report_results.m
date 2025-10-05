@@ -103,7 +103,7 @@ if isfield(config.plotting, 'show_psd_plot') && config.plotting.show_psd_plot
     end
 
     % --- Plot the TARGET PSD by calling the selected model function ---
-    if ~isempty(config) && (strcmp(config.generation.method, 'PSD_FFT') | strcmp(config.generation.method, 'PSD_SUM')) && isfield(surface_data, 'generation_params')
+    if ~isempty(config) && (startsWith(config.generation.method, 'PSD')) && isfield(surface_data, 'generation_params')
 
         % 1. Get the model handle from the config used for generation
         model_handle = config.psd.model;
