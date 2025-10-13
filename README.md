@@ -1,6 +1,6 @@
 # RSGA (Rough Surface Generator & Analyzer)
 
-This is a modular and flexible MATLAB tool for generating and analyzing 2D randomly rough surfaces. It combines several methods from the tribology and surface science literature into a single, configurable workflow.
+This is a modular and flexible MATLAB tool for generating and analyzing 2D randomly rough surfaces. It combines several methods into a single, configurable workflow.
 
 ## Features
 
