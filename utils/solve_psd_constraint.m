@@ -14,7 +14,7 @@ params.q_upper = q_upper;
 
 assert(isscalar(params.corr_lengths), 'For this PSD model, config.psd.corr_lengths must be a scalar.');
 cl_eff = params.corr_lengths;
-q_rolloff = 2*pi / cl_eff;
+q_rolloff = 2 * pi / cl_eff;
 params.q_rolloff = q_rolloff;
 
 A0 = 2*pi; A2 = pi;
@@ -33,10 +33,23 @@ switch params.constraint_mode
         sigma_rms = params.target_rms_height;
         g_rms = params.target_rms_gradient;
         qr_solved = (g_rms / sigma_rms) * sqrt(I0 / I2);
+        if qr_solved < q_lower || qr_solved > q_upper
+            if qr_solved < q_lower
+                % 03C0 is the hexadecimal number for the Greek symbol pi,
+                % which can be used via \x03C0 in warning function, as
+                % described in sprintf function.
+                warning('q_rolloff (%f) was smaller than q_L=2\x03C0/L (%f). We force q_rolloff = q_L + epsilon.', qr_solved, q_lower);
+                qr_solved = q_lower + qr_solved/100;
+            else
+                error('q_rolloff (%f) was greater than q_S=2\x03C0/d (%f). Adjust constraints on m0 and m2.', qr_solved, q_upper);
+                % qr_solved = q_upper - qr_solved/100;
+            end
+        end
         params.q_rolloff = qr_solved;
         Ml = q_lower / qr_solved;
         Ms = q_upper / qr_solved;
         I0_solved = ((1 - Ml^2) / 2) - ((1 - Ms^(2 + psd_slope)) / (2 + psd_slope + eps));
         C0 = sigma_rms^2 / (A0 * I0_solved * qr_solved^2);
+
 end
 end

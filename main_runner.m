@@ -42,7 +42,7 @@ config.workflow.loadSimpleFile.varNames.f = 'f'; % Name of the 2D height matrix
 % Let's keep it isotropic!
 config.grid.is_anisotropic = false;         % Master switch for anisotropic generation
 
-Nxy = 100;
+Nxy = 500;
 dxy = 1;
 config.grid.num_points = [Nxy, Nxy];        % Number of points [Nx, Ny]
 config.grid.point_spacing = [dxy, dxy];     % Distance between points [dx, dy]
@@ -71,16 +71,17 @@ if startsWith(config.generation.method, 'PSD')
         % 'm0': Match a target RMS height (m0).
         % 'm2': Match a target RMS gradient (m2).
         % 'm0_and_m2': Match BOTH (requires a model with a free parameter like simple_rolloff).
-        config.psd.constraint_mode = 'm0';
+        config.psd.constraint_mode = 'm0_and_m2';
+        config.psd.imposed_d_for_qS = 2 * dxy;
     elseif contains(model_name, 'k_correlation')
         % Parameters for the K-correlation (Palasantzas) model
         config.psd.model = @psd_models.k_correlation;
         config.psd.constraint_mode = 'm0';
     end
     config.psd.target_rms_height = 8.0;
-    config.psd.target_rms_gradient = 1;
-    config.psd.psd_slope = -8;
-    config.psd.corr_lengths = 20;% Use scalar since the surface will be isotropic.
+    config.psd.target_rms_gradient = .5;
+    config.psd.psd_slope = -100;
+    config.psd.corr_lengths = 1.0;% Use scalar since the surface will be isotropic.
 
     % Amplitude Method (not implemented for PSD_SUM)
     % 'srm': Spectral Representation Method (deterministic, recommended).

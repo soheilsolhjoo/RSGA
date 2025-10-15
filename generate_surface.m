@@ -70,10 +70,15 @@ switch config.generation.method
             dqx = 2*pi / Lx;
             dqy = 2*pi / Ly;
             L_eff = max(lateral_length);
-            delta_eff = min(point_spacing);
             q_lower = 2*pi / L_eff;
+            q_grids = struct('Qx_grid', Qx_grid, 'Qy_grid', Qy_grid, 'dqx', dqx, 'dqy', dqy, 'q_lower', q_lower);
+            if isfield(config.psd, 'imposed_d_for_qS')
+                delta_eff = config.psd.imposed_d_for_qS;
+            else
+                delta_eff = min(point_spacing);
+            end
             q_upper = pi / delta_eff;
-            q_grids = struct('Qx_grid', Qx_grid, 'Qy_grid', Qy_grid, 'dqx', dqx, 'dqy', dqy, 'q_lower', q_lower, 'q_upper', q_upper);
+            q_grids.q_upper = q_upper;
             
             disp(['  - Solving for PSD parameters with constraint mode: ''', config.psd.constraint_mode, '''...']);
             [C0, solved_params] = solve_psd_constraint(config, q_grids);
